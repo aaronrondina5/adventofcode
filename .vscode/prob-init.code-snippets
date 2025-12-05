@@ -1,0 +1,30 @@
+{
+    "prob-init": {
+        "scope": "c++, cpp, c, h",
+        "prefix": "prob-init",
+        "body": [
+            "#include <algorithm>",
+            "#include <iostream>",
+            "#include <string>",
+            "#include <vector>",
+            "",
+            "using namespace std;",
+            "",
+            "",
+            "int solve() {",
+            "\tstring line;",
+            "\twhile (getline(cin, line)) {",
+            "\t\t// process each line",
+            "\t\t$0",
+            "\t}",
+            "",
+            "\treturn 0;",
+            "}",
+            "",
+            "int main() {",
+            "\treturn solve();",
+            "}",
+            ""
+        ]
+    }
+}
