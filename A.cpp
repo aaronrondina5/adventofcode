@@ -8,46 +8,114 @@ using namespace std;
 constexpr int START = 50;
 constexpr int LOCK_MAX = 99;
 
-int solve_part1(const int startingPosition, const int lockMax) {
-    if (lockMax < 0 || lockMax < startingPosition) {
-        cout << "Invalid lock max or stargin position. startingPosition=" << startingPosition << ", lockMax=" << lockMax;
-        exit(1);
-    }
-
-    int curr = startingPosition;
-    int result = 0;
-
-    string line;
-    while (getline(cin, line)) {
-
-        const char direction = line[0];
-        if ('L' != direction && 'R' != direction) {
-            cerr << "Invalid direction=" << direction << "\n";
-            exit(2);
-        }
-
-        int value = stoi(line.substr(1));
-        value = value % (lockMax + 1);
-        if ('L' == direction) {
-            value = lockMax + 1 - value;
-        }
-
-        const int temp = curr + value;
-
-        // cout << "lock at position=" << curr << ". Moving " << value << " spaces to overextended position " << (curr + value) << "\n";
-
-        curr = (curr + value) % (lockMax + 1);
-
-        if (0 == curr) {
-            ++result;
-        }
-    }
-
-    cout << "Result is=" << result << endl;
-
-    return 0;
+void protect_input(const int start_position, const int lock_max)
+{
+	if (lock_max < 0 || lock_max < start_position)
+	{
+		cout << "Invalid lock max or stargin position. start_position=" << start_position
+			 << ", lock_max=" << lock_max;
+		exit(1);
+	}
 }
 
-int main() {
-    return solve_part1(START, LOCK_MAX);
+void protect_line_direction(const char direction)
+{
+	if ('L' != direction && 'R' != direction)
+	{
+		cerr << "Invalid direction=" << direction << "\n";
+		exit(2);
+	}
+}
+
+int solve_part2(const int start_position, const int lock_max)
+{
+	protect_input(start_position, lock_max);
+
+	const int num_lock_ticks = lock_max + 1;
+	int curr_position = start_position;
+	int result = 0;
+
+	string line;
+	while (getline(cin, line))
+	{
+		const char direction = line[0];
+		protect_line_direction(direction);
+
+		int i_num_ticks = stoi(line.substr(1));
+
+		cout << "current_position=" << curr_position << "; directive=" << direction << i_num_ticks
+             << ", curr_result=" << result << "\n";
+
+		const int revolutions = i_num_ticks / num_lock_ticks;
+		result += revolutions;
+
+		i_num_ticks = i_num_ticks % num_lock_ticks;
+
+		if (0 == i_num_ticks)
+		{
+			continue;
+		}
+
+		if ('L' == direction)
+		{
+			const int new_position = curr_position - i_num_ticks;
+			if (curr_position != 0 && new_position <= 0)
+			{
+				++result;
+			}
+			curr_position = new_position < 0 ? num_lock_ticks + new_position : new_position;
+		}
+		else
+		{
+			const int new_position = curr_position + i_num_ticks;
+			if (new_position > lock_max)
+			{
+				++result;
+			}
+			curr_position = new_position > lock_max ? new_position - num_lock_ticks : new_position;
+		}
+	}
+
+	cout << "Result is = " << result << endl;
+
+	return 0;
+}
+
+int solve_part1(const int start_position, const int lock_max)
+{
+	protect_input(start_position, lock_max);
+
+	const int num_lock_ticks = lock_max + 1;
+	int curr = start_position;
+	int result = 0;
+
+	string line;
+	while (getline(cin, line))
+	{
+		const char direction = line[0];
+		protect_line_direction(direction);
+
+		int value = stoi(line.substr(1));
+		value = value % num_lock_ticks;
+		if ('L' == direction)
+		{
+			value = num_lock_ticks - value;
+		}
+
+		curr = (curr + value) % num_lock_ticks;
+
+		if (0 == curr)
+		{
+			++result;
+		}
+	}
+
+	cout << "Result is=" << result << endl;
+
+	return 0;
+}
+
+int main()
+{
+	return solve_part2(START, LOCK_MAX);
 }
