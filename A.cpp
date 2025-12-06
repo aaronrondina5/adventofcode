@@ -36,14 +36,7 @@ int solve_part1(const int startingPosition, const int lockMax) {
 
         // cout << "lock at position=" << curr << ". Moving " << value << " spaces to overextended position " << (curr + value) << "\n";
 
-        if (temp > lockMax)
-        {
-            curr = temp - lockMax - 1;
-        }
-        else
-        {
-            curr = temp;
-        }
+        curr = (curr + value) % (lockMax + 1);
 
         if (0 == curr) {
             ++result;
