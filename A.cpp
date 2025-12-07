@@ -36,7 +36,7 @@ void add_repeats_helper_part_2(u_ll& result, u_ll start, u_ll end)
 	cout << "[ " << start << " - " << end << " ] \n";
 
 	u_int power_end = get_power(end);
-	u_ll max_base = pow(10, (power_end + 1 ) / 2);
+	u_ll max_base = pow(10, (power_end + 1) / 2);
 	cout << "max_base=" << max_base << "\n";
 
 	unordered_set<u_ll> checked;
@@ -50,7 +50,8 @@ void add_repeats_helper_part_2(u_ll& result, u_ll start, u_ll end)
 
 		if (curr_value > end)
 		{
-			cout << "First value too big. Will exit range. base=" << base << ", curr_value=" << curr_value << "\n";
+			cout << "First value too big. Will exit range. base=" << base
+				 << ", curr_value=" << curr_value << "\n";
 			break;
 		}
 
