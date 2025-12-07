@@ -10,7 +10,9 @@
 Add your solution to `A.cpp`.
 
 ### From Command Line
-`mkdir -p ${fileDirname}/build && g++-15 -std=c++23 A.cpp -o ${fileDirname}/build/${fileBasenameNoExtension}.tsk && ${fileDirname}/build/${fileBasenameNoExtension}.tsk < input.txt > output.txt`
+```
+mkdir -p ${fileDirname}/build && g++-15 -std=c++23 A.cpp -o ${fileDirname}/build/${fileBasenameNoExtension}.tsk && ${fileDirname}/build/${fileBasenameNoExtension}.tsk < input.txt > output.txt
+```
 
 ### From VSCode:
 Terminal > Run Task > Execute Task > Execute File A

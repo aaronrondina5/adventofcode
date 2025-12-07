@@ -12,7 +12,7 @@ void protect_input(const int start_position, const int lock_max)
 {
 	if (lock_max < 0 || lock_max < start_position)
 	{
-		cout << "Invalid lock max or stargin position. start_position=" << start_position
+		cerr << "Invalid lock max or stargin position. start_position=" << start_position
 			 << ", lock_max=" << lock_max;
 		exit(1);
 	}
@@ -27,7 +27,7 @@ void protect_line_direction(const char direction)
 	}
 }
 
-int solve_part2(const int start_position, const int lock_max)
+int solve_part2(const vector<string>& lines, const int start_position, const int lock_max)
 {
 	protect_input(start_position, lock_max);
 
@@ -35,8 +35,7 @@ int solve_part2(const int start_position, const int lock_max)
 	int curr_position = start_position;
 	int result = 0;
 
-	string line;
-	while (getline(cin, line))
+	for (const auto& line : lines)
 	{
 		const char direction = line[0];
 		protect_line_direction(direction);
@@ -81,7 +80,7 @@ int solve_part2(const int start_position, const int lock_max)
 	return 0;
 }
 
-int solve_part1(const int start_position, const int lock_max)
+int solve_part1(const vector<string>& lines, const int start_position, const int lock_max)
 {
 	protect_input(start_position, lock_max);
 
@@ -89,8 +88,7 @@ int solve_part1(const int start_position, const int lock_max)
 	int curr = start_position;
 	int result = 0;
 
-	string line;
-	while (getline(cin, line))
+	for (const auto& line : lines)
 	{
 		const char direction = line[0];
 		protect_line_direction(direction);
@@ -115,7 +113,28 @@ int solve_part1(const int start_position, const int lock_max)
 	return 0;
 }
 
+int solve(vector<string>& input)
+{
+	return solve_part2(input, START, LOCK_MAX);
+}
+
+void get_input_as_vector(vector<string>& input_lines)
+{
+	string line;
+	while (getline(cin, line))
+	{
+		input_lines.push_back(line);
+	}
+}
+
 int main()
 {
-	return solve_part2(START, LOCK_MAX);
+	vector<string> input_lines;
+	get_input_as_vector(input_lines);
+
+	if (0 != solve(input_lines))
+	{
+		return EXIT_FAILURE;
+	}
+	return EXIT_SUCCESS;
 }

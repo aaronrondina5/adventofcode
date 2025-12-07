@@ -37,12 +37,14 @@ void add_repeats_helper_part_2(u_ll& result, u_ll start, u_ll end)
 
 	u_int power_end = get_power(end);
 	u_ll max_base = pow(10, (power_end + 1) / 2);
-	cout << "max_base=" << max_base << "\n";
+	u_ll min_base = 1; // maybe change later
+
+	cout << "max_base=" << max_base << ", min_base=" << min_base << "\n";
 
 	unordered_set<u_ll> checked;
 
 	// loop through values up to the max base
-	for (u_ll base = 1; base < max_base; ++base)
+	for (u_ll base = min_base; base < max_base; ++base)
 	{
 		const u_int base_power = get_power(base) + 1;
 		u_int power = base_power;
@@ -120,10 +122,15 @@ void add_repeats_helper_part_1(u_ll& result, u_ll start, u_ll end)
 	}
 }
 
-int solve()
+int solve(vector<string>& input)
 {
-	string line;
-	getline(cin, line);
+	if (input.size() != 1)
+	{
+		cerr << "Input must be of length 1";
+		return 1;
+	}
+
+	const string& line = input[0];
 
 	stringstream begin_range;
 	stringstream end_range;
@@ -166,7 +173,23 @@ int solve()
 	return 0;
 }
 
+void get_input_as_vector(vector<string>& input_lines)
+{
+	string line;
+	while (getline(cin, line))
+	{
+		input_lines.push_back(line);
+	}
+}
+
 int main()
 {
-	return solve();
+	vector<string> input_lines;
+	get_input_as_vector(input_lines);
+
+	if (0 != solve(input_lines))
+	{
+		return EXIT_FAILURE;
+	}
+	return EXIT_SUCCESS;
 }
