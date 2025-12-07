@@ -44,7 +44,7 @@ int solve_part2(const int start_position, const int lock_max)
 		int i_num_ticks = stoi(line.substr(1));
 
 		cout << "current_position=" << curr_position << "; directive=" << direction << i_num_ticks
-             << ", curr_result=" << result << "\n";
+			 << ", curr_result=" << result << "\n";
 
 		const int revolutions = i_num_ticks / num_lock_ticks;
 		result += revolutions;

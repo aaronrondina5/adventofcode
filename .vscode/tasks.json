@@ -2,9 +2,18 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Execute File A",
+            "label": "Execute A",
             "type": "shell",
             "command": "mkdir -p ${fileDirname}/build && g++-15 -std=c++23 A.cpp -o ${fileDirname}/build/${fileBasenameNoExtension}.tsk && ${fileDirname}/build/${fileBasenameNoExtension}.tsk < input.txt > output.txt",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "Execute A - Test Input",
+            "type": "shell",
+            "command": "mkdir -p ${fileDirname}/build && g++-15 -std=c++23 A.cpp -o ${fileDirname}/build/${fileBasenameNoExtension}.tsk && ${fileDirname}/build/${fileBasenameNoExtension}.tsk < test_input.txt > test_output.txt",
             "group": {
                 "kind": "build",
                 "isDefault": false
