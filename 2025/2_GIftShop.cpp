@@ -13,11 +13,6 @@ using u_int = unsigned int;
 
 u_int get_power(u_ll value)
 {
-	if (value < 0)
-	{
-		exit(1);
-	}
-
 	u_int power = 0;
 	while (value > 9)
 	{
@@ -27,12 +22,26 @@ u_int get_power(u_ll value)
 	return power;
 }
 
+/**
+ * @brief Determine sum of periodic numbers within a range.
+ *
+ *        First solution could be to loop through each value,
+ *        then convert to a string, and pass to some is_periodic function
+ *        that used pointers and checked the strings.
+ *
+ *        However, wanted to try generate periodic numbers. Keep everything numeric
+ *        and no secondary is_periodic check for every converted string.
+ *
+ * 		  This is the general pattern for periodics:
+ *
+ *        x + (10 * x) + (10^2 * x) + (10^3 * x)
+ *        xy + (10^2 * xy) + (10^4*xy) + (10^6 * xy)
+ *        xyz + (10^3 * xyz) + (10^6*xyz) + (10^9 * xyz)
+ *        etc.
+ *
+ */
 void add_repeats_helper_part_2(u_ll& result, u_ll start, u_ll end)
 {
-	// now need to loop through possibilities 1 through power
-	// x + (10 * x) + (10^2 * x) + ...
-	// xy + (10^2 * xy) + (10^4*xy)
-	// xyz + (10^3 * xyz) + (10^6*xyz) + ...
 	cout << "[ " << start << " - " << end << " ] \n";
 
 	u_int power_end = get_power(end);
@@ -76,20 +85,12 @@ void add_repeats_helper_part_2(u_ll& result, u_ll start, u_ll end)
 
 void add_repeats_helper_part_1(u_ll& result, u_ll start, u_ll end)
 {
-	// what can we do?
-
-	// what is the smallest possible repeat after a value?
-	// 1234 -> 1313
-	// you know it will be at least on the magnitude of 10^3
-
 	// start at using the power / 2
 	// ie, if our number is 1234, we want to start with 10
 	// so that we start with 1010, then try 1111, then 1212, then 1313
 	// if 12345, 10^4, then we have 100100 as the first possible
 
-	// we can generate all the possible repeats until we get higher than end maybe?
-
-	cout << "Checking range. start=" << start << "; end=" << end << "\n";
+	cout << "[ " << start << " - " << end << " ] \n";
 
 	u_int power = get_power(start);
 	u_ll repeat_base = pow(10, power / 2);
