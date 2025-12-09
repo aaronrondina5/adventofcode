@@ -24,42 +24,44 @@ void max_from(size_t& index_result, const size_t start_index_inclusive,
 }
 
 /**
- * @brief Get the maximum 12 digit number formed for each bank and sum.
- *        You could do the same thing as before, but instead of 2 times,
- *        do it 12.
- *        We can generalize this by looping.
+ * @brief Get the maximum number formed for bank.
+ *        Uses the same concept as simple_solve_part_1(), but loops through num_digits.
  */
-int simple_solve_part_2(const vector<string>& battery_banks, const size_t num_digits)
+u_ll get_max_joltage(const string& battery_bank, const size_t num_digits)
+{
+	const size_t n = battery_bank.size();
+
+	u_ll result = 0;
+	size_t last_max_index = 0;
+	for (int i_digit = 0; i_digit < num_digits; ++i_digit)
+	{
+		const size_t lo_index_incl = i_digit == 0 ? 0 : last_max_index + 1;
+		const size_t hi_index_excl = n + 1 - (num_digits - i_digit);
+
+		max_from(last_max_index, lo_index_incl, hi_index_excl, battery_bank);
+
+		result *= 10;
+		result += (battery_bank[last_max_index] - '0');
+	}
+
+	return result;
+}
+
+/**
+ * @brief Cleaner, final solution for part 2.
+ * 
+ *        O(n * l * j) n = num banks, l = length bank, j = num digits
+ */
+u_ll compute_total_max_joltage(const vector<string>& battery_banks, const size_t num_digits)
 {
 	u_ll result = 0;
-	vector<size_t> max_value_indices(num_digits, 0);
-	const size_t n_battery_banks = battery_banks.size();
-
-	for (size_t i_battery_bank = 0; i_battery_bank < n_battery_banks; ++i_battery_bank)
+	const size_t n = battery_banks.size();
+	for (size_t i = 0; i < n; ++i)
 	{
-		const string& battery_bank = battery_banks[i_battery_bank];
-		cout << "[ Battery bank " << battery_bank << " ]\n";
-
-		const size_t num_batteries_in_bank = battery_bank.size();
-
-		for (int i_digit = 0; i_digit < num_digits; ++i_digit)
-		{
-			const size_t lo_index_incl = i_digit == 0 ? 0 : (max_value_indices[i_digit - 1] + 1);
-			const size_t hi_index_excl = num_batteries_in_bank + 1 - (num_digits - i_digit);
-			max_from(max_value_indices[i_digit], lo_index_incl, hi_index_excl, battery_bank);
-		}
-
-		for (int i_digit = num_digits - 1; i_digit > -1; --i_digit)
-		{
-			result += ((battery_bank[max_value_indices[i_digit]] - '0') *
-					   pow(10, (num_digits - 1) - i_digit));
-		}
-
-		fill(max_value_indices.begin(), max_value_indices.end(), 0);
+		result += get_max_joltage(battery_banks[i], num_digits);
 	}
 
 	cout << "Total charge = " << result << endl;
-
 	return 0;
 }
 
@@ -100,7 +102,9 @@ int simple_solve_part_1(const vector<string>& battery_banks)
 
 int solve(const vector<string>& battery_banks)
 {
-	return simple_solve_part_2(battery_banks, 12);
+	simple_solve_part_1(battery_banks);
+	compute_total_max_joltage(battery_banks, 12);
+	return 0;
 }
 
 void get_input_as_vector(vector<string>& input_lines)
