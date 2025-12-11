@@ -1,4 +1,4 @@
-Part 1 : num_fresh=664
-time_seconds=0.00022
-Part 2 : count_total_possible_fresh=350780324308385
-time_seconds=3.6e-05
+Part 1 : get_number_double_repeat_between=8576933996
+time_seconds=0.007873
+Part 2 : get_total_periodic_repeats=25663320831
+time_seconds=0.036849
