@@ -1,6 +1,4 @@
-Part 1 : get_num_accessible_rolls=1384
-time_seconds=0.003987
-Part 2 : solve_accessible_with_clear_iter=8013
-time_seconds=0.079779
-Part 2 : get_accessible_rolls_with_clear_bfs=8013
-time_seconds=15.1722
+Part 1 : num_fresh=664
+time_seconds=0.00022
+Part 2 : count_total_possible_fresh=350780324308385
+time_seconds=3.6e-05

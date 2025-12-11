@@ -3,53 +3,26 @@
 #include <string>
 #include <vector>
 
+using u_int = unsigned int;
+
 using namespace std;
 
-constexpr int START = 50;
-constexpr int LOCK_MAX = 99;
-
-void protect_input(const int start_position, const int lock_max)
+u_int find_num_times_cross_zero(const vector<string>& lines, const u_int start_position,
+								const u_int lock_max)
 {
-	if (lock_max < 0 || lock_max < start_position)
-	{
-		cerr << "Invalid lock max or stargin position. start_position=" << start_position
-			 << ", lock_max=" << lock_max;
-		exit(1);
-	}
-}
+	const u_int num_lock_ticks = lock_max + 1;
 
-void protect_line_direction(const char direction)
-{
-	if ('L' != direction && 'R' != direction)
-	{
-		cerr << "Invalid direction=" << direction << "\n";
-		exit(2);
-	}
-}
-
-int solve_part2(const vector<string>& lines, const int start_position, const int lock_max)
-{
-	protect_input(start_position, lock_max);
-
-	const int num_lock_ticks = lock_max + 1;
+	u_int result = 0;
 	int curr_position = start_position;
-	int result = 0;
 
 	for (const auto& line : lines)
 	{
 		const char direction = line[0];
-		protect_line_direction(direction);
-
 		int i_num_ticks = stoi(line.substr(1));
 
-		cout << "current_position=" << curr_position << "; directive=" << direction << i_num_ticks
-			 << ", curr_result=" << result << "\n";
-
-		const int revolutions = i_num_ticks / num_lock_ticks;
-		result += revolutions;
+		result += (i_num_ticks / num_lock_ticks); // revolutions
 
 		i_num_ticks = i_num_ticks % num_lock_ticks;
-
 		if (0 == i_num_ticks)
 		{
 			continue;
@@ -75,15 +48,12 @@ int solve_part2(const vector<string>& lines, const int start_position, const int
 		}
 	}
 
-	cout << "Result is = " << result << endl;
-
-	return 0;
+	return result;
 }
 
-int solve_part1(const vector<string>& lines, const int start_position, const int lock_max)
+u_int find_num_times_land_on_zero(const vector<string>& lines, const int start_position,
+								  const int lock_max)
 {
-	protect_input(start_position, lock_max);
-
 	const int num_lock_ticks = lock_max + 1;
 	int curr = start_position;
 	int result = 0;
@@ -91,32 +61,28 @@ int solve_part1(const vector<string>& lines, const int start_position, const int
 	for (const auto& line : lines)
 	{
 		const char direction = line[0];
-		protect_line_direction(direction);
-
 		int value = stoi(line.substr(1));
 		value = value % num_lock_ticks;
+
 		if ('L' == direction)
 		{
 			value = num_lock_ticks - value;
 		}
 
 		curr = (curr + value) % num_lock_ticks;
-
 		if (0 == curr)
 		{
 			++result;
 		}
 	}
 
-	cout << "Result is=" << result << endl;
-
-	return 0;
+	return result;
 }
 
 int solve(vector<string>& input)
 {
-	cout << "Part 1 : result=" << solve_part1(input, START, LOCK_MAX) << "\n";
-	cout << "Part 2 : result=" << solve_part2(input, START, LOCK_MAX) << "\n";
+	cout << "Part 1 : result=" << find_num_times_land_on_zero(input, 50, 99) << "\n";
+	cout << "Part 2 : result=" << find_num_times_cross_zero(input, 50, 99) << "\n";
 }
 
 void get_input_as_vector(vector<string>& input_lines)

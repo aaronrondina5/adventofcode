@@ -1,6 +1,6 @@
-Part 1 : get_num_accessible_rolls=13
-Part 1 took 3e-05 seconds
-Part 2 : solve_accessible_with_clear_iter=43
-Part 2 - solve_accessible_with_clear_iter took 5.2e-05 seconds
-Part 2 : solve_accessible_with_clear_iter=0
-Part 2 - get_accessible_rolls_with_clear_bfs took 9e-06 seconds
+Part 1 : num_fresh=3
+time_seconds=1.7e-05
+range=[3 - 5]
+range=[10 - 20]
+Part 2 : count_total_possible_fresh=14
+time_seconds=3e-06
