@@ -10,6 +10,9 @@ using namespace std;
 using u_ll = unsigned long long;
 using u_int = unsigned int;
 
+/**
+ * @brief Get the index of the maximum value in a given range of a numeric string.
+ */
 void max_from(size_t& index_result, const size_t start_index_inclusive,
 			  const size_t end_index_exclusive, const string& string_of_integers)
 {
@@ -49,10 +52,10 @@ u_ll get_max_joltage(const string& battery_bank, const size_t num_digits)
 
 /**
  * @brief Cleaner, final solution for part 2.
- * 
+ *
  *        O(n * l * j) n = num banks, l = length bank, j = num digits
  */
-u_ll compute_total_max_joltage(const vector<string>& battery_banks, const size_t num_digits)
+u_int compute_total_max_joltage(const vector<string>& battery_banks, const size_t num_digits)
 {
 	u_ll result = 0;
 	const size_t n = battery_banks.size();

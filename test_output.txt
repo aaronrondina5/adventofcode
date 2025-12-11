@@ -1,6 +1,6 @@
-Max charge for battery bank. index=0, charge=98
-Max charge for battery bank. index=1, charge=89
-Max charge for battery bank. index=2, charge=78
-Max charge for battery bank. index=3, charge=92
-Total charge = 357
-Total charge = 3121910778619
+Part 1 : get_num_accessible_rolls=13
+Part 1 took 3e-05 seconds
+Part 2 : solve_accessible_with_clear_iter=43
+Part 2 - solve_accessible_with_clear_iter took 5.2e-05 seconds
+Part 2 : solve_accessible_with_clear_iter=0
+Part 2 - get_accessible_rolls_with_clear_bfs took 9e-06 seconds

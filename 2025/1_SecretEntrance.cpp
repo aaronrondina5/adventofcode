@@ -115,7 +115,8 @@ int solve_part1(const vector<string>& lines, const int start_position, const int
 
 int solve(vector<string>& input)
 {
-	return solve_part2(input, START, LOCK_MAX);
+	cout << "Part 1 : result=" << solve_part1(input, START, LOCK_MAX) << "\n";
+	cout << "Part 2 : result=" << solve_part2(input, START, LOCK_MAX) << "\n";
 }
 
 void get_input_as_vector(vector<string>& input_lines)
