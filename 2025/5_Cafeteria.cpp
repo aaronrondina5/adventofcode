@@ -30,8 +30,13 @@ constexpr char dash = '-';
 // merged ranges, best case O( f ), worst case O (r x f)
 
 // what if you sorted _both_??
-// then, you have O(rlogr + flogf) for the sorting
-// and then you just have 2 pointers so your run time for scan is O( r + f )
+// and then you just have 2 pointers so your run time for scan is O( r )
+
+// then, you have
+//     O(flogf) for the sorting food
+//     O(rlogr + r) for merge & sort ranges
+//     O( r ) for scan
+// Total = O( flogf + rlogr + r )
 // this is the fastest!
 
 /**
