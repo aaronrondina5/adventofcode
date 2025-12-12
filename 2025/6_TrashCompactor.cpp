@@ -177,7 +177,7 @@ ll compute_method_2(const vector<string>& input)
 			curr_oper = input[rows - 1][col];
 		}
 
-		if (all_rows_space)
+		if (all_rows_space || 0 == col)
 		{
 			// All spaces. apply operations, add value, and reset for the next set
 			result += apply_operation(curr_operands, curr_oper);
@@ -189,12 +189,6 @@ ll compute_method_2(const vector<string>& input)
 			// add our value to the set, and reset the curr_value
 			curr_operands.emplace_back(curr_value);
 			curr_value = 0;
-
-			if (0 == col)
-			{
-				// edge case for final operation if doesnt end on a space
-				result += apply_operation(curr_operands, curr_oper);
-			}
 		}
 	}
 
@@ -207,7 +201,7 @@ void time_wrap(function<void(const vector<string>&)> func, const vector<string>&
 	func(input1);
 	auto end = chrono::system_clock::now();
 	chrono::duration<double> elapsed = end - start;
-	cout << "time_seconds=" << elapsed.count() << endl;
+	cout << "time_seconds=" << elapsed.count() << "\n";
 }
 
 int solve(const vector<string>& input)
@@ -228,21 +222,21 @@ int solve(const vector<string>& input)
 	return 0;
 }
 
-void get_input_as_vector(vector<string>& input)
+void get_input_as_vector(vector<string>& input_lines)
 {
 	string line;
 	while (getline(cin, line))
 	{
-		input.push_back(line);
+		input_lines.push_back(line);
 	}
 }
 
 int main()
 {
-	vector<string> input;
-	get_input_as_vector(input);
+	vector<string> input_lines;
+	get_input_as_vector(input_lines);
 
-	if (0 != solve(input))
+	if (0 != solve(input_lines))
 	{
 		return EXIT_FAILURE;
 	}

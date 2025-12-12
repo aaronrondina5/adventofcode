@@ -1,6 +1,4 @@
-Part 1 : num_fresh=3
-time_seconds=1.7e-05
-range=[3 - 5]
-range=[10 - 20]
-Part 2 : count_total_possible_fresh=14
-time_seconds=3e-06
+Part 1 : compute_total_value=4277556
+time_seconds=2.6e-05
+Part 2 : compute_total_value=3263827
+time_seconds=7e-06
