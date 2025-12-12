@@ -8,4 +8,4 @@ PointerAlignment: Left
 AllowShortFunctionsOnASingleLine: Inline
 SortIncludes: true
 AlwaysBreakTemplateDeclarations: Yes
-BreakBeforeBraces: Allman
+BreakBeforeBraces: Attach

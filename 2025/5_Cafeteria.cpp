@@ -42,27 +42,21 @@ constexpr char dash = '-';
 /**
  * @brief Convert the input to vectors.
  */
-void parse_input(vector<Range>& ranges, vector<u_ll>& ids, const vector<string>& input_lines)
-{
+void parse_input(vector<Range>& ranges, vector<u_ll>& ids, const vector<string>& input_lines) {
 	const size_t n = input_lines.size();
 	ranges.reserve(n);
 	ids.reserve(n);
 
 	bool at_ids = false;
-	for (const auto& line : input_lines)
-	{
-		if (0 == line.size())
-		{
+	for (const auto& line : input_lines) {
+		if (0 == line.size()) {
 			at_ids = true;
 			continue;
 		}
 
-		if (at_ids)
-		{
+		if (at_ids) {
 			ids.emplace_back(stoull(line));
-		}
-		else
-		{
+		} else {
 			size_t dash_pos = line.find(dash);
 			ranges.emplace_back(
 				Range{stoull(line.substr(0, dash_pos)), stoull(line.substr(dash_pos + 1))});
@@ -73,30 +67,25 @@ void parse_input(vector<Range>& ranges, vector<u_ll>& ids, const vector<string>&
 /**
  * @brief take a list of ranges and merge them. O(nlogn)
  */
-void merge_ranges(vector<Range>& ranges)
-{
+void merge_ranges(vector<Range>& ranges) {
 	sort(ranges.begin(), ranges.end(),
 		 [](const Range& a, const Range& b) { return a.first < b.first; });
 
 	const size_t n = ranges.size();
 	size_t i_curr_range = 0;
 
-	for (size_t i_forward_range = 1; i_forward_range < n; ++i_forward_range)
-	{
+	for (size_t i_forward_range = 1; i_forward_range < n; ++i_forward_range) {
 		Range& current_range = ranges[i_curr_range];
 		const Range& forward_range = ranges[i_forward_range];
 
-		if (current_range.second < forward_range.first)
-		{
+		if (current_range.second < forward_range.first) {
 			// this means we cannot merge the forward range into our new one.
 			// thus, we must increment current range
 			++i_curr_range;
 			// copy the new range into the next position,
 			// because the forward range could be further out
 			ranges[i_curr_range] = forward_range;
-		}
-		else
-		{
+		} else {
 			// we can incorporate the forward range into the current range
 			current_range.second = max(current_range.second, forward_range.second);
 		}
@@ -106,8 +95,7 @@ void merge_ranges(vector<Range>& ranges)
 	ranges.resize(i_curr_range + 1);
 }
 
-u_int count_fresh(vector<Range>& ranges, vector<u_ll>& ids)
-{
+u_int count_fresh(vector<Range>& ranges, vector<u_ll>& ids) {
 	u_int result = 0;
 
 	merge_ranges(ranges);
@@ -119,22 +107,16 @@ u_int count_fresh(vector<Range>& ranges, vector<u_ll>& ids)
 	size_t i_ranges = 0;
 	size_t i_ids = 0;
 
-	while (i_ranges < n_ranges && i_ids < n_ids)
-	{
+	while (i_ranges < n_ranges && i_ids < n_ids) {
 		const Range& range = ranges[i_ranges];
 		const u_ll id = ids[i_ids];
-		if (id < range.first)
-		{
+		if (id < range.first) {
 			// too lo. increment ids
 			++i_ids;
-		}
-		else if (id > range.second)
-		{
+		} else if (id > range.second) {
 			// to high, increment ranges
 			++i_ranges;
-		}
-		else
-		{
+		} else {
 			// in range
 			++result;
 			++i_ids;
@@ -145,20 +127,17 @@ u_int count_fresh(vector<Range>& ranges, vector<u_ll>& ids)
 }
 
 // Part 2 seems even easier. We just can merge and count a the valid ids at the same time
-u_ll count_total_possible_fresh(vector<Range>& ranges)
-{
+u_ll count_total_possible_fresh(vector<Range>& ranges) {
 	u_ll result = 0;
 	merge_ranges(ranges);
-	for (const Range& range : ranges)
-	{
+	for (const Range& range : ranges) {
 		result += (range.second - range.first + 1);
 	}
 	return result;
 }
 
 void time_wrap(std::function<void(vector<Range>&, vector<u_ll>&)> func, vector<Range>& ranges,
-			   vector<u_ll>& ids)
-{
+			   vector<u_ll>& ids) {
 	auto start = std::chrono::high_resolution_clock::now();
 	func(ranges, ids);
 	auto end = std::chrono::high_resolution_clock::now();
@@ -166,11 +145,9 @@ void time_wrap(std::function<void(vector<Range>&, vector<u_ll>&)> func, vector<R
 	cout << "time_seconds=" << elapsed.count() << "\n";
 }
 
-int solve(const vector<string>& input_lines)
-{
+int solve(const vector<string>& input_lines) {
 	// PART 1
-	auto part_1 = [](vector<Range>& ranges, vector<u_ll>& ids)
-	{
+	auto part_1 = [](vector<Range>& ranges, vector<u_ll>& ids) {
 		u_int num_fresh = count_fresh(ranges, ids);
 		cout << "Part 1 : num_fresh=" << num_fresh << "\n";
 	};
@@ -180,8 +157,7 @@ int solve(const vector<string>& input_lines)
 	time_wrap(part_1, ranges, ids);
 
 	// PART 2
-	auto part_2 = [](vector<Range>& ranges, vector<u_ll>& ids)
-	{
+	auto part_2 = [](vector<Range>& ranges, vector<u_ll>& ids) {
 		u_ll total_possible_fresh = count_total_possible_fresh(ranges);
 		cout << "Part 2 : count_total_possible_fresh=" << total_possible_fresh << "\n";
 	};
@@ -193,22 +169,18 @@ int solve(const vector<string>& input_lines)
 	return 0;
 }
 
-void get_input_as_vector(vector<string>& input_lines)
-{
+void get_input_as_vector(vector<string>& input_lines) {
 	string line;
-	while (getline(cin, line))
-	{
+	while (getline(cin, line)) {
 		input_lines.push_back(line);
 	}
 }
 
-int main()
-{
+int main() {
 	vector<string> input_lines;
 	get_input_as_vector(input_lines);
 
-	if (0 != solve(input_lines))
-	{
+	if (0 != solve(input_lines)) {
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
