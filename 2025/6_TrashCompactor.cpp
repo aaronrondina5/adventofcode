@@ -130,7 +130,7 @@ ll solve_part_1(const vector<string>& input)
 
 // Part 2
 // Yep, as I intuited in part 1, the difficulty of this problem lies in parsing the input
-// so, what is the algorithm here?
+//
 // starting at the right-most col, we go down the rows to get our value.
 // if all col values are space, we know the values are done.
 // before this, you always check the final row for an existing operation to keep
@@ -177,7 +177,7 @@ ll compute_method_2(const vector<string>& input)
 			curr_oper = input[rows - 1][col];
 		}
 
-		if (all_rows_space || 0 == col)
+		if (all_rows_space)
 		{
 			// All spaces. apply operations, add value, and reset for the next set
 			result += apply_operation(curr_operands, curr_oper);
@@ -189,6 +189,12 @@ ll compute_method_2(const vector<string>& input)
 			// add our value to the set, and reset the curr_value
 			curr_operands.emplace_back(curr_value);
 			curr_value = 0;
+
+			if (0 == col)
+			{
+				// edge case for final operation if doesnt end on a space
+				result += apply_operation(curr_operands, curr_oper);
+			}
 		}
 	}
 
@@ -201,7 +207,7 @@ void time_wrap(function<void(const vector<string>&)> func, const vector<string>&
 	func(input1);
 	auto end = chrono::system_clock::now();
 	chrono::duration<double> elapsed = end - start;
-	cout << "time_seconds=" << elapsed.count() << "\n";
+	cout << "time_seconds=" << elapsed.count() << endl;
 }
 
 int solve(const vector<string>& input)
@@ -222,21 +228,21 @@ int solve(const vector<string>& input)
 	return 0;
 }
 
-void get_input_as_vector(vector<string>& input_lines)
+void get_input_as_vector(vector<string>& input)
 {
 	string line;
 	while (getline(cin, line))
 	{
-		input_lines.push_back(line);
+		input.push_back(line);
 	}
 }
 
 int main()
 {
-	vector<string> input_lines;
-	get_input_as_vector(input_lines);
+	vector<string> input;
+	get_input_as_vector(input);
 
-	if (0 != solve(input_lines))
+	if (0 != solve(input))
 	{
 		return EXIT_FAILURE;
 	}
