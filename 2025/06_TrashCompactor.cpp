@@ -51,8 +51,7 @@ ll compute_total_value(const vector<vector<ll>>& data_set, const vector<char>& o
 	return result;
 };
 
-void parse_method_1(vector<vector<ll>>& data_set, vector<char>& operations,
-					const vector<string>& input) {
+void parse_method_1(vector<vector<ll>>& data_set, vector<char>& operations, const vector<string>& input) {
 	const size_t rows = input.size();
 	const size_t cols = input[0].size(); // protect later
 

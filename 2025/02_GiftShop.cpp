@@ -145,8 +145,10 @@ void parse_input(vector<Range>& result, const string& input) {
 			break;
 
 		size_t end_pos = (i_comma == string::npos) ? input.size() : i_comma;
-		result.emplace_back(Range{stoull(input.substr(start, i_dash - start)),
-								  stoull(input.substr(i_dash + 1, end_pos - i_dash - 1))});
+		result.emplace_back(
+			Range{
+				stoull(input.substr(start, i_dash - start)),
+				stoull(input.substr(i_dash + 1, end_pos - i_dash - 1))});
 
 		start = (i_comma == string::npos) ? input.size() : i_comma + 1;
 	}

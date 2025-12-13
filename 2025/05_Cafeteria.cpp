@@ -58,8 +58,7 @@ void parse_input(vector<Range>& ranges, vector<u_ll>& ids, const vector<string>&
 			ids.emplace_back(stoull(line));
 		} else {
 			size_t dash_pos = line.find(dash);
-			ranges.emplace_back(
-				Range{stoull(line.substr(0, dash_pos)), stoull(line.substr(dash_pos + 1))});
+			ranges.emplace_back(Range{stoull(line.substr(0, dash_pos)), stoull(line.substr(dash_pos + 1))});
 		}
 	}
 }
@@ -68,8 +67,7 @@ void parse_input(vector<Range>& ranges, vector<u_ll>& ids, const vector<string>&
  * @brief take a list of ranges and merge them. O(nlogn)
  */
 void merge_ranges(vector<Range>& ranges) {
-	sort(ranges.begin(), ranges.end(),
-		 [](const Range& a, const Range& b) { return a.first < b.first; });
+	sort(ranges.begin(), ranges.end(), [](const Range& a, const Range& b) { return a.first < b.first; });
 
 	const size_t n = ranges.size();
 	size_t i_curr_range = 0;
@@ -136,8 +134,10 @@ u_ll count_total_possible_fresh(vector<Range>& ranges) {
 	return result;
 }
 
-void time_wrap(std::function<void(vector<Range>&, vector<u_ll>&)> func, vector<Range>& ranges,
-			   vector<u_ll>& ids) {
+void time_wrap(
+	std::function<void(vector<Range>&, vector<u_ll>&)> func,
+	vector<Range>& ranges,
+	vector<u_ll>& ids) {
 	auto start = std::chrono::high_resolution_clock::now();
 	func(ranges, ids);
 	auto end = std::chrono::high_resolution_clock::now();

@@ -3,9 +3,14 @@ IndentWidth: 4
 UseTab: Always
 AccessModifierOffset: -4
 TabWidth: 4
-ColumnLimit: 100
+ColumnLimit: 110
 PointerAlignment: Left
 AllowShortFunctionsOnASingleLine: Inline
 SortIncludes: true
 AlwaysBreakTemplateDeclarations: Yes
 BreakBeforeBraces: Attach
+AlignAfterOpenBracket: AlwaysBreak
+BinPackParameters: false
+BinPackArguments: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowAllArgumentsOnNextLine: false

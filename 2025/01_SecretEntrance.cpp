@@ -15,8 +15,7 @@ constexpr char RIGHT = 'R';
 // will have to account for left & right turns. easiest is to convert everything
 // into a right turn by doing (right_turn = lock_max + 1 - left_turn)
 // mod must happen first, so that its in the range of 0-lock_max
-u_int find_num_times_land_on_zero(const vector<string>& lines, const int start_position,
-								  const int lock_max) {
+u_int find_num_times_land_on_zero(const vector<string>& lines, const int start_position, const int lock_max) {
 	const int num_lock_ticks = lock_max + 1;
 	int curr = start_position;
 	int result = 0;
@@ -50,8 +49,10 @@ u_int find_num_times_land_on_zero(const vector<string>& lines, const int start_p
 // Say you land on 0 on one Left iteration & count this value. If you then
 // have another left, you cannot count this value again.
 // So you need to check this edge case.
-u_int find_num_times_cross_zero(const vector<string>& lines, const u_int start_position,
-								const u_int lock_max) {
+u_int find_num_times_cross_zero(
+	const vector<string>& lines,
+	const u_int start_position,
+	const u_int lock_max) {
 	const u_int num_lock_ticks = lock_max + 1;
 	u_int result = 0;
 	int curr_position = start_position;

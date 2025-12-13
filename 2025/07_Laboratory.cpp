@@ -16,14 +16,13 @@ constexpr char OPEN_SPACE = '.';
 constexpr char START = 'S';
 constexpr char BEAM_SPLITTER = '^';
 
-
 // Part 1
 // I think you could either recursively go down the beams and keep track
-// of what cols have already been processed.
+// of what cols have already been processed. Time would be O(rows * cols) &
+// space would be O(rows * cols)
 //
 // I suppose you could also do a single row DP.
 // The dp keeps track of beams heading down columns.
-// If this changes, the state could contain num_beams
 //
 // vector<bool> beam_state(cols, false);
 // if (manifold[i][j] == ^ && beam_state(j))
@@ -33,17 +32,17 @@ constexpr char BEAM_SPLITTER = '^';
 //
 // But, we also need to remove the beam state from underneath the splitter.
 // So, check the surrounding sides for splitters, and update the beam state to
-// 
-// 
+//
 // There is an issue if there are 2 next to each other.
-// if you set the beam state to the next one to true, then it will think there is 
+// if you set the beam state to the next one to true, then it will think there is
 // a beam, even if its not on that col. SO we have to use indices.
 // Initially, beam state indices will be set to rows.
-// Beam state check is 
-// if (beam_state[col] < col) 
+// Beam state check is
+// if (beam_state[col] < col)
 //
 // Time : O(rows * cols)
 // Space : O(cols)
+// This solution is best. Non-recursive & less space.
 
 void print_beam_state(const vector<u_int>& beam_state, const u_int max) {
 	const size_t n = beam_state.size();
@@ -98,16 +97,16 @@ u_ll number_splits(const vector<string>& manifold) {
 // You add the current value because it may have been updated by a neighbor
 // also, it has its own state
 // 2 down
-//       |   | 
+//       |   |
 // . . . ^ . ^ . .
-// . . | . | . . 
+// . . | . | . .
 
 u_ll number_paths(const vector<string>& manifold) {
 	const u_int rows = manifold.size();
 	const u_int cols = manifold[0].size();
 
 	vector<u_int> last_row_index_beam(cols, rows); // keep track of the beams above
-	vector<u_ll> paths_to_end_positions(cols, 0); // there are 0 paths to begin with
+	vector<u_ll> paths_to_end_positions(cols, 0);  // there are 0 paths to begin with
 
 	for (u_int row = 0; row < rows; ++row) {
 		for (u_int col = 0; col < cols; ++col) {
@@ -125,14 +124,16 @@ u_ll number_paths(const vector<string>& manifold) {
 						// beam splits to the left. Update the last beam row index for the left col
 						// and also update the number of paths to the left
 						last_row_index_beam[col - 1] = row;
-						paths_to_end_positions[col - 1] = paths_to_end_positions[col - 1] + paths_to_end_positions[col];
+						paths_to_end_positions[col - 1] =
+							paths_to_end_positions[col - 1] + paths_to_end_positions[col];
 					}
-	
+
 					if (col < cols - 1) {
-						// beam splits to the right. Update the last beam row index for the right col
-						// add number of paths (check if you have already counted the +1)
+						// beam splits to the right. Update the last beam row index for the right
+						// col add number of paths (check if you have already counted the +1)
 						last_row_index_beam[col + 1] = row;
-						paths_to_end_positions[col + 1] = paths_to_end_positions[col + 1] + paths_to_end_positions[col];
+						paths_to_end_positions[col + 1] =
+							paths_to_end_positions[col + 1] + paths_to_end_positions[col];
 					}
 
 					if ((0 == col || OPEN_SPACE == manifold[row][col - 1]) &&

@@ -18,8 +18,8 @@ constexpr char roll = '@';
 constexpr char cleared_roll = 'x';
 constexpr char empty_location = '.';
 
-const vector<pair<int, int>> adjacent{{1, -1}, {1, 0},	{1, 1},	 {-1, -1},
-									  {-1, 0}, {-1, 1}, {0, -1}, {0, 1}};
+const vector<pair<int, int>> adjacent{{1, -1}, {1, 0}, {1, 1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}};
+const vector<pair<int, int>> back_left_right{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}};
 
 // Part 1
 // thinking is that its a straightfoward loop through the grid, and check neighbors.
@@ -27,8 +27,7 @@ const vector<pair<int, int>> adjacent{{1, -1}, {1, 0},	{1, 1},	 {-1, -1},
 // like this.
 // perhaps there is a slightly more efficient solution that doesnt re-count neighbors. But not sure.
 
-u_int sum_neighbors_with_symbol(const int i, const int j, const char symbol,
-								const vector<string>& grid) {
+u_int sum_neighbors_with_symbol(const int i, const int j, const char symbol, const vector<string>& grid) {
 	u_int result = 0;
 
 	const size_t i_max = grid.size();
@@ -52,23 +51,15 @@ u_int sum_neighbors_with_symbol(const int i, const int j, const char symbol,
  *        Easiest solution is to loop through each, sum the neighbors.
  *
  *        Time : O(i * j * 8) = O(i * j)
- *
- * 	      should_clear will clear the roll if it can be
  */
-u_int get_num_accessible_rolls(vector<string>& grid, const u_int max_neighbors,
-							   const bool should_clear) {
+u_int get_num_accessible_rolls(const vector<string>& grid, const u_int max_neighbors) {
 	const size_t rows = grid.size();
 	const size_t cols = grid[0].size();
 	u_int result = 0;
 	for (int i = 0; i < rows; ++i) {
 		for (int j = 0; j < cols; ++j) {
-			if (grid[i][j] != roll ||
-				sum_neighbors_with_symbol(i, j, roll, grid) > max_neighbors - 1)
+			if (grid[i][j] != roll || sum_neighbors_with_symbol(i, j, roll, grid) > max_neighbors - 1)
 				continue;
-
-			if (should_clear) {
-				grid[i][j] = cleared_roll;
-			}
 			++result;
 		}
 	}
@@ -76,26 +67,62 @@ u_int get_num_accessible_rolls(vector<string>& grid, const u_int max_neighbors,
 }
 
 // Part 2
-// The most obvious solution that comes to mind is to just iterate until you can no
-// longer can.
-// Maybe there is some more efficient solution out there? Some BFS? But it would still end up
-// repeating grid positions.
-u_int solve_accessible_with_clear_iter(vector<string>& grid, const u_int max_neighbors) {
-	const size_t rows = grid.size();
-	const size_t cols = grid[0].size();
-
+// The most obvious solution that comes to mind is to just iterate part 1 (with a clear)
+// until the result is 0.
+//
+// Initially, I tried BFS idea and it was taking way too long. This was because
+// i was initially enqueuing items repeatedly by not re-checking whether it was a roll
+// or not. It could have been cleared and checked by an earlier iteration that shared it as
+// a neighbor!
+u_int attack_and_clear(vector<string>& grid, queue<pair<int, int>>& q, const u_int max_neighbors) {
 	u_int result = 0;
-	while (true) {
-		u_int iter_result = get_num_accessible_rolls(grid, max_neighbors, true);
-		result += iter_result;
-		if (iter_result == 0)
-			break;
+
+	const size_t i_max = grid.size();
+	const size_t j_max = grid[0].size();
+
+	while (!q.empty()) {
+		const auto [i, j] = q.front();
+		q.pop();
+
+		if (grid[i][j] != roll || sum_neighbors_with_symbol(i, j, roll, grid) >= max_neighbors) {
+			// not clearable
+			continue;
+		}
+
+		grid[i][j] = cleared_roll;
+		++result;
+
+		// add neighbors that are rolls
+		for (const auto& adj : adjacent) {
+			const auto& [ii, jj] = adj;
+			int iii = i + ii;
+			int jjj = j + jj;
+
+			if (iii >= 0 && jjj >= 0 && iii < i_max && jjj < j_max && grid[iii][jjj] == roll) {
+				q.push({iii, jjj});
+			}
+		}
 	}
 
 	return result;
 }
 
-void timeWrap(std::function<void(vector<string>&)> func, vector<string>& input) {
+u_int get_number_accessible_with_clear(vector<string>& grid, const u_int max_neighbors) {
+	const size_t rows = grid.size();
+	const size_t cols = grid[0].size();
+
+	vector<vector<u_int>> visited_on_iteration(rows, vector<u_int>(cols, 0));
+	queue<pair<int, int>> q;
+	for (int i = 0; i < rows; ++i) {
+		for (int j = 0; j < cols; ++j) {
+			if (grid[i][j] == roll && sum_neighbors_with_symbol(i, j, roll, grid) < max_neighbors)
+				q.push({i, j});
+		}
+	}
+	return attack_and_clear(grid, q, max_neighbors);
+}
+
+void time_wrap(std::function<void(vector<string>&)> func, vector<string>& input) {
 	auto start = std::chrono::high_resolution_clock::now();
 	func(input);
 	auto end = std::chrono::high_resolution_clock::now();
@@ -104,18 +131,18 @@ void timeWrap(std::function<void(vector<string>&)> func, vector<string>& input) 
 }
 
 int solve(vector<string>& input_lines) {
+	vector<string> input_copy{input_lines}; // just to be safe
 	auto solve_1 = [](vector<string>& grid) {
-		u_int result = get_num_accessible_rolls(grid, 4, false);
+		u_int result = get_num_accessible_rolls(grid, 4);
 		std::cout << "Part 1 : get_num_accessible_rolls=" << result << "\n";
 	};
-	timeWrap(solve_1, input_lines);
+	time_wrap(solve_1, input_copy);
 
 	auto solve_2 = [](vector<string>& grid) {
-		u_int result = solve_accessible_with_clear_iter(grid, 4);
-		std::cout << "Part 2 : solve_accessible_with_clear_iter=" << result << "\n";
+		u_int result = get_number_accessible_with_clear(grid, 4);
+		std::cout << "Part 2 : get_number_accessible_with_clear=" << result << "\n";
 	};
-	// we can re-use input since it wasnt altered by solve_1
-	timeWrap(solve_2, input_lines);
+	time_wrap(solve_2, input_lines); // just use the input
 
 	return 0;
 }

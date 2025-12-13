@@ -26,8 +26,11 @@ using u_int = unsigned int;
 /**
  * @brief Get the index of the maximum value in a given range of a numeric string.
  */
-void max_from(size_t& index_result, const size_t start_index_inclusive,
-			  const size_t end_index_exclusive, const string& string_of_integers) {
+void max_from(
+	size_t& index_result,
+	const size_t start_index_inclusive,
+	const size_t end_index_exclusive,
+	const string& string_of_integers) {
 	index_result = start_index_inclusive;
 	for (size_t i = start_index_inclusive + 1; i < end_index_exclusive; ++i) {
 		if ((string_of_integers[i] - '0') > (string_of_integers[index_result] - '0')) {

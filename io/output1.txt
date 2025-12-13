@@ -1,2 +1,4 @@
-Part 1 : number_splits=1516
-Part 2 : number_splits=1393669447690
+Part 1 : get_num_accessible_rolls=1384
+time_seconds=0.004395
+Part 2 : get_number_accessible_with_clear=8013
+time_seconds=0.014896
