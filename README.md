@@ -7,12 +7,12 @@
    - On Ubuntu: `sudo apt install g++`
 
 ## Running
-Add your solution to `A.cpp`.
+Add your solution to `main.cpp`.
 
 ### From Command Line
 ```
-mkdir -p ${fileDirname}/build && g++-15 -std=c++23 A.cpp -o ${fileDirname}/build/${fileBasenameNoExtension}.tsk && ${fileDirname}/build/${fileBasenameNoExtension}.tsk < input.txt > output.txt
+mkdir -p ./build && g++-15 -std=c++23 main.cpp -o ./build/${fileBasenameNoExtension}.tsk && ./build/${fileBasenameNoExtension}.tsk < ./io/input0.txt > ./io/output0.txt
 ```
 
 ### From VSCode:
-Terminal > Run Task > Execute Task > Execute File A
+Terminal > Run Task > Execute Task > Execute main
