@@ -1,4 +1,4 @@
-Part 1 : get_num_accessible_rolls=13
-time_seconds=3e-05
-Part 2 : get_number_accessible_with_clear=42
-time_seconds=0.000116
+Part 1 : result=20
+time_seconds=0.000197
+Part 2 : last_pair_single_circuit=25272
+time_seconds=0.000173

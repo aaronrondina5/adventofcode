@@ -24,7 +24,7 @@
             "\tfunc(input);",
             "\tauto end = chrono::system_clock::now();",
             "\tchrono::duration<double> elapsed = end - start;",
-            "\tcout << \"time_seconds=\" << elapsed.count() << \"endl;\";",
+            "\tcout << \"time_seconds=\" << elapsed.count() << endl;",
             "}",
             "",
             "int solve(vector<string>& input_lines)",
