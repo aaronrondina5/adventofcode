@@ -145,6 +145,9 @@ void add_to_circuits(Circuits& circuits, u_int node_1, u_int node_2) {
 	auto c1_it = circuits.end();
 	auto c2_it = circuits.end();
 
+	// check the existing circuits for any that conatain either node.
+	// if they do, we want to add to the existing circuit.
+	// if 2 separate circuits are found, we need to merge those circuits.
 	for (auto it = circuits.begin(); it != circuits.end(); ++it) {
 
 		bool in1 = it->contains(node_1);

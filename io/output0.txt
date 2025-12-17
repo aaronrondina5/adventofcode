@@ -1,4 +1,10 @@
-Part 1 : result=20
-time_seconds=0.000197
-Part 2 : last_pair_single_circuit=25272
-time_seconds=0.000173
+x=2, y=3
+x=2, y=5
+x=7, y=1
+x=7, y=3
+x=9, y=5
+x=9, y=7
+x=11, y=1
+x=11, y=7
+Part 2 : max_rectangle_part_2=1
+time_seconds=2.7e-05

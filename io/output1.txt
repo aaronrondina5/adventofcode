@@ -1,5 +1,2 @@
-Part 1 : result=52668
-time_seconds=0.206939
-37565, 39240
-Part 2 : last_pair_single_circuit=1.47405e+09
-time_seconds=0.108683
+Part 1 : result=4748769124
+time_seconds=0.002129
