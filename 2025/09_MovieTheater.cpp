@@ -4,6 +4,7 @@
 #include <functional>
 #include <iostream>
 #include <numeric>
+#include <queue>
 #include <set>
 #include <sstream>
 #include <stack>
@@ -86,7 +87,7 @@ ll max_rectangle_quadratic(const vector<string>& input) {
  *
  * We could do better. We dynamically update the GridItems to
  * indicate the next available to the right and next available down & up.
- * Then the complexity just goes back to n^2,
+ * Then the complexity just goes to j * n^2.
  *
  * --------------------------------------
  * Overall Complexity:
@@ -98,8 +99,6 @@ ll max_rectangle_quadratic(const vector<string>& input) {
  *  - k : number unique y coords
  *  - j : number unique x coordinates
  */
-
-enum Direction { LEFT, RIGHT, UP, DOWN };
 
 struct Corner {
 	Corner() : original_coords{}, mapped_coords{}, original_index{-1}, max_size{0LL} {}
@@ -117,10 +116,11 @@ std::ostream& operator<<(std::ostream& os, const Corner& corner) {
 	return os;
 }
 
-constexpr char VERTICAL_BORDER = '|';
-constexpr char HORIZONTAL_BORDER = '-';
-constexpr char CORNER = 'X';
+constexpr char BORDER_HORIZONTAL = '-';
+constexpr char BORDER_VERTICAL = '|';
+constexpr char CORNER = '#';
 constexpr char DOT = '.';
+constexpr char FILL = 'X';
 
 struct GridItem {
 	GridItem() : symbol{DOT}, relative_height{0LL} {}
@@ -129,25 +129,38 @@ struct GridItem {
 };
 using Grid = vector<vector<GridItem>>;
 
-void print_grid(const Grid& grid) {
+void print_grid(const Grid& grid, const bool heights = false) {
 	const size_t rows = grid.size();
 	const size_t cols = grid[0].size();
-	stringstream ss;
-	for (size_t row = 0; row < rows; ++row) {
-		for (size_t col = 0; col < cols; ++col) {
-			ss << " " << grid[row][col].symbol << "(" << grid[row][col].relative_height << ") ";
+
+	if (!heights) {
+		stringstream ss;
+		for (size_t row = 0; row < rows; ++row) {
+			for (size_t col = 0; col < cols; ++col) {
+				ss << " " << grid[row][col].symbol << " ";
+			}
+			ss << "\n";
 		}
-		ss << "\n";
+		cout << ss.str() << endl;
+	} else {
+		stringstream ss;
+		for (size_t row = 0; row < rows; ++row) {
+			for (size_t col = 0; col < cols; ++col) {
+				ss << " " << grid[row][col].relative_height << " ";
+			}
+			ss << "\n";
+		}
+		cout << ss.str() << endl;
 	}
-	cout << ss.str() << endl;
 }
 
 /**
  * @brief Assuming that our grid has stored the relative heights of each position,
  *        we only have to traverse horizontally, and check that the relative heights of
- *        each are greater than the vertical distance
+ *        each are greater than the vertical distance.
+ *        Updates the max size of each and uses this to short circuit the execution.
  */
-ll max_rectangle_for_corners(const Grid& grid, const Corner& a, const Corner& b) {
+ll max_rectangle_for_corners(Corner& a, Corner& b, const Grid& grid) {
 	ll potential_result = area(a.original_coords, b.original_coords);
 	ll a_max = a.max_size;
 	ll b_max = b.max_size;
@@ -178,6 +191,9 @@ ll max_rectangle_for_corners(const Grid& grid, const Corner& a, const Corner& b)
  *
  *        if you are in the polygon, you will increase the relative height as you go
  *        up by one. the first border hit will have a height of 1, since height is inclusive.
+ *
+ *        IMPORTANT: This assumes that the polygon is FILLED, meaning dots indicate the outside
+ *                   of the polygon.
  */
 void make_heights_dp(Grid& grid) {
 	const size_t rows = grid.size();
@@ -186,19 +202,10 @@ void make_heights_dp(Grid& grid) {
 	const size_t cols = grid[0].size();
 
 	for (size_t col = 0; col < cols; ++col) {
-		bool in_polygon = false;
 		for (size_t row = 0; row < rows; ++row) {
 			GridItem& item = grid[row][col];
-			if (!in_polygon) {
-				if (item.symbol == CORNER || item.symbol == HORIZONTAL_BORDER) {
-					in_polygon = true;
-					item.relative_height = 1;
-				}
-			} else {
-				item.relative_height = grid[row - 1][col].relative_height + 1;
-				if (item.symbol == CORNER || item.symbol == HORIZONTAL_BORDER) {
-					in_polygon = false;
-				}
+			if (DOT != item.symbol) {
+				item.relative_height = row > 0 ? grid[row - 1][col].relative_height + 1 : 1;
 			}
 		}
 	}
@@ -209,21 +216,72 @@ ll get_max_rectangle(Grid& grid, vector<Corner>& corners) {
 	// max_rectangle_for_corners only has to traverse in 1 dimension
 	make_heights_dp(grid);
 
+	print_grid(grid, true);
+
 	ll result = 0LL;
 	const size_t n = corners.size();
 	for (size_t i = 0; i < n; ++i) {
 		for (size_t j = i + 1; j < n; ++j) {
-			result = max(result, max_rectangle_for_corners(grid, corners[j], corners[i]));
+			result = max(result, max_rectangle_for_corners(corners[j], corners[i], grid));
 		}
 	}
 	return result;
+}
+
+void fill_grid(Grid& grid, const vector<Corner>& corners) {
+	const ll rows = grid.size();
+	const ll cols = grid[0].size();
+
+	pair<ll, ll> left_most = {0LL, cols - 1};
+	for (const Corner& c : corners) {
+		if (c.mapped_coords.x < left_most.second) {
+			left_most.second = c.mapped_coords.x;
+			left_most.first = c.mapped_coords.y;
+		}
+	}
+
+	pair<ll, ll> start{0LL, left_most.second + 1}; // will be 1 rightward from the border
+	if (0 != left_most.first && DOT != grid[left_most.first - 1][left_most.second].symbol) {
+		// going up
+		start.first = left_most.first - 1;
+	} else {
+		// going down
+		start.first = left_most.first + 1;
+	}
+
+	const vector<pair<short, short>>
+		neighbors{{-1, 0}, {1, 0}, {0, 1}, {0, -1}, {1, 1}, {-1, 1}, {-1, -1}, {1, -1}};
+
+	vector<vector<bool>> seen(grid.size(), vector<bool>(grid[0].size(), false));
+	queue<pair<ll, ll>> q;
+	q.push(start);
+
+	while (!q.empty()) {
+		const auto [row, col] = q.front();
+		q.pop();
+
+		grid[row][col].symbol = FILL;
+
+		for (const auto& neighbor : neighbors) {
+			const auto [i, j] = neighbor;
+			const ll next_row = row + i;
+			const ll next_col = col + j;
+
+			if (next_row < 0 || next_row >= rows || next_col < 0 || next_col >= cols)
+				continue;
+			if (!seen[next_row][next_col] && DOT == grid[next_row][next_col].symbol) {
+				seen[next_row][next_col] = true;
+				q.push({row + i, col + j});
+			}
+		}
+	}
 }
 
 void add_vertical_border(Grid& grid, const ll x, const ll y_lo_exclusive, const ll y_hi_exclusive) {
 	ll lo = y_lo_exclusive + 1;
 	ll hi = y_hi_exclusive - 1;
 	while (lo <= hi) {
-		grid[lo][x].symbol = VERTICAL_BORDER;
+		grid[lo][x].symbol = BORDER_VERTICAL;
 		++lo;
 	}
 }
@@ -232,14 +290,14 @@ void add_horizontal_border(Grid& grid, const ll y, const ll x_lo_exclusive, cons
 	ll lo = x_lo_exclusive + 1;
 	ll hi = x_hi_exclusive - 1;
 	while (lo <= hi) {
-		grid[y][lo].symbol = HORIZONTAL_BORDER;
+		grid[y][lo].symbol = BORDER_HORIZONTAL;
 		++lo;
 	}
 }
 
-void connect_corners(Grid& grid, const Corner& c1, const Corner& c2) {
-	auto [min_x, max_x] = minmax(c1.mapped_coords.x, c2.mapped_coords.x);
-	auto [min_y, max_y] = minmax(c1.mapped_coords.y, c2.mapped_coords.y);
+void connect_corners(Grid& grid, const Corner& a, const Corner& b) {
+	auto [min_x, max_x] = minmax(a.mapped_coords.x, b.mapped_coords.x);
+	auto [min_y, max_y] = minmax(a.mapped_coords.y, b.mapped_coords.y);
 
 	if (min_x == max_x) {
 		// these are on the same column - need to add a vertical connection b/w rows
@@ -330,6 +388,10 @@ ll get_num_unique_x(const vector<Corner>& input) {
 /**
  * @brief will create a compressed grid given the corner values.
  *        will only insert the corners in the grid & not fill.
+ *        After getting to the end of this problem, it seems necessary
+ *        to add spacing between items, so that determining polygon bounds
+ *        becomes more trivial. Absolute facepalm. Thus, the grid size will
+ *        be 2x the unique values
  *
  * @param corners_in original list of sorted corners. New coordinates will be added here
  * @return resulting compressed grid that contains the indices of corners
@@ -349,7 +411,9 @@ Grid create_compressed_grid(vector<Corner>& corners_in) {
 
 	// grid only needs to be size of num unique values
 	ll num_unique_x = get_num_unique_x(corners_in);
-	Grid result(unique_y_values_sorted.size(), vector<GridItem>(num_unique_x, GridItem{}));
+	Grid result(unique_y_values_sorted.size() * 2, vector<GridItem>(num_unique_x * 2, GridItem{}));
+
+	ll spacer = 2;
 
 	ll i_corner = 0;			  // current index in the corners list
 	ll compressed_x_idx_curr = 0; // current index in the compressed grid
@@ -365,7 +429,7 @@ Grid create_compressed_grid(vector<Corner>& corners_in) {
 			// look through corners for the number of unique values higher than the last
 			// y idx and lower than this y index
 			const ll original_y = corner_in_sorted.original_coords.y;
-			compressed_y_idx_curr = search_sorted_list<ll, ll>(unique_y_values_sorted, original_y);
+			compressed_y_idx_curr = 2 * search_sorted_list<ll, ll>(unique_y_values_sorted, original_y);
 
 			// update the original value with the mapped coordinates
 			ll original_idx = corner_in_sorted.original_index;
@@ -383,7 +447,7 @@ Grid create_compressed_grid(vector<Corner>& corners_in) {
 
 		// we have found all the corners with the same x value.
 		// increment the compressed x idx
-		++compressed_x_idx_curr;
+		compressed_x_idx_curr = compressed_x_idx_curr + spacer;
 	}
 
 	return move(result);
@@ -414,13 +478,10 @@ ll max_rectangle_part_2(const vector<string>& input) {
 	vector<Corner> corners(n, Corner{});
 	parse_input_to_corners(corners, input);
 
-	// map the corners to a compressed grid
+	// Create a compressed, filled grid
 	Grid grid = create_compressed_grid(corners);
-	print_grid(grid);
-
-	// create the borders
 	create_polygon_borders(grid, corners);
-	print_grid(grid);
+	fill_grid(grid, corners);
 
 	// solve using our compressed grid & corners
 	return get_max_rectangle(grid, corners);
