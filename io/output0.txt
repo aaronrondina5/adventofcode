@@ -1,11 +1,32 @@
- 0  0  1  1  1  1  1  0 
- 0  0  2  2  2  2  2  0 
- 1  1  3  3  3  3  3  0 
- 2  2  4  4  4  4  4  0 
- 3  3  5  5  5  5  5  0 
- 0  0  0  0  6  6  6  0 
- 0  0  0  0  7  7  7  0 
- 0  0  0  0  0  0  0  0 
-
-Part 2 : max_rectangle_part_2=24
-time_seconds=0.000162
+Reached final state in 2 steps.
+Machine in binary:
+  Final State: 0110
+  Buttons:
+    0001
+    0101
+    0010
+    0011
+    1010
+    1100
+machine took 2 steps 
+Reached final state in 3 steps.
+Machine in binary:
+  Final State: 00010
+  Buttons:
+    10111
+    00110
+    10001
+    11100
+    01111
+machine took 3 steps 
+Reached final state in 2 steps.
+Machine in binary:
+  Final State: 011101
+  Buttons:
+    111110
+    100110
+    111011
+    011000
+machine took 2 steps 
+Part 1 : result=7
+time_seconds=7.6e-05

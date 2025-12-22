@@ -34,6 +34,8 @@ constexpr char PARENS_OPEN = '(';
 // for example [.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
 // I wonder if you can sort of create a graph of connections, and BFS?
 //
+// BFS should be okay. There is probably a DP way to do this as well, that may be
+// better in that it doesnt endlessly run if buttons do not converge.
 
 struct Machine {
 	Machine() : final_state{0}, buttons{} {}
